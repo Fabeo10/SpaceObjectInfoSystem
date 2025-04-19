@@ -44,7 +44,7 @@ public class RunSimulation {
                             u.displayRole();
                             break;
                         } else {
-                            System.out.println("Invalid Scientist ID. Try again or 'B' to cancel.");
+                            System.out.println("Invalid Scientist ID. Contact Administrator, try again or 'B' to return to the main menu.");
                         }
                     }
                     break;
@@ -64,7 +64,7 @@ public class RunSimulation {
                             u.displayRole();
                             break;
                         } else {
-                            System.out.println("Invalid Representative ID. Try again or 'B' to cancel.");
+                            System.out.println("Invalid Space Agency Representative ID. Contact Administrator, try again, or 'B' to return to the main menu.");
                         }
                     }
                     break;
@@ -84,7 +84,7 @@ public class RunSimulation {
                             u.displayRole();
                             break;
                         } else {
-                            System.out.println("Invalid Policy Maker ID. Try again or 'B' to cancel.");
+                            System.out.println("Invalid Policy Maker ID. Contact Administrator, try again, or 'B' to return to the main menu.");
                         }
                     }
                     break;
@@ -102,7 +102,7 @@ public class RunSimulation {
 
                 case 5: // Exit
                     exitProgram = true;
-                    System.out.println("Exiting system. Goodbye.");
+                    System.out.println("***Exiting the system gracefully*** . . . DONE, goodbye!");
                     break;
 
                 default:
@@ -127,15 +127,15 @@ public class RunSimulation {
             System.out.println("4. Back to Main Menu");
             System.out.print("Select an option (1-4): ");
 
-            int choice;
+            int adminChoice;
             try {
-                choice = Integer.parseInt(scanner.nextLine());
+                adminChoice = Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Choose a number between 1 and 4.");
                 continue;
             }
 
-            switch (choice) {
+            switch (adminChoice) {
                 case 1:
                     System.out.print("Enter User Name: ");
                     String nameIn = scanner.nextLine();
