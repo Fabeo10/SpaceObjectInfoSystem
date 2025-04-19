@@ -9,7 +9,7 @@ import java.util.List;
  * 
  * @author David Jones, Fabian Ornelas
  */
-public class csvParser {
+public class CSVParser {
     /**
      * Parses a String of data from a CSV file into a list of fields, allowing for
      * escaped commas which are enclosed by double quotes
@@ -46,7 +46,7 @@ public class csvParser {
      * @param fields - The list of fields derived from the file
      * @return A new Space Object with the given attributes
      */
-    public static spaceObject spaceObjectFromEntry(List<String> fields){
+    public static SpaceObject spaceObjectFromEntry(List<String> fields){
         String recordID = fields.get(0);
         String sattelliteName = fields.get(2);
         String country = fields.get(3);
@@ -58,7 +58,7 @@ public class csvParser {
         String geohash = fields.get(10);
         int daysOld = Integer.parseInt(fields.get(18));
         long conjunctionCount = Long.parseLong(fields.get(19));
-        return new spaceObject(recordID, sattelliteName, country, orbitType,
+        return new SpaceObject(recordID, sattelliteName, country, orbitType,
                             launchYear, launchSite, longitude, averageLongitude,
                             geohash, daysOld, conjunctionCount);
     }
@@ -69,8 +69,8 @@ public class csvParser {
      * @param filename - The given file where the data is stored
      * @return A list of all the entries in the file
      */
-    public static List<spaceObject> readCsvFile(String filename) {
-        List<spaceObject> entries = new ArrayList<>();                                 //Fields are stored as a list of Strings
+    public static List<SpaceObject> readCsvFile(String filename) {
+        List<SpaceObject> entries = new ArrayList<>();                                 //Fields are stored as a list of Strings
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             reader.readLine();                                                         //Discards the header row   
@@ -84,13 +84,5 @@ public class csvParser {
         }
 
         return entries;
-    }
-    
-    public static void main(String[] args){
-        String fileName = "rso_metrics.csv";
-        List<spaceObject> testList = readCsvFile(fileName);
-        for(spaceObject x : testList){
-            System.out.println(x);
-        }
     }
 }
