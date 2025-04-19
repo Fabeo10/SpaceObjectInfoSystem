@@ -1,4 +1,4 @@
-public class spaceObject{
+public class SpaceObject{
     private String recordID;
     private String sattelliteName;
     private String country;
@@ -11,7 +11,7 @@ public class spaceObject{
     private int daysOld;
     private long conjunctionCount;
 
-    spaceObject(String recordID, String satelliteName, String country, String orbitType,
+    SpaceObject(String recordID, String satelliteName, String country, String orbitType,
                 int launchYear, String launchSite, double longitude, double averageLongitude,
                 String geohash, int daysOld, long conjunctionCount){
                     this.recordID = recordID;
