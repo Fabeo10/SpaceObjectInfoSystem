@@ -2,50 +2,136 @@ import java.util.Scanner;
 
 /**
  * Entry point for the Space Object Info System simulation.
- * Provides a console-based administrator interface for creating,
- * managing, and deleting users.
- *
- * Usage:
- * - On startup, prompts for the administrator's name.
- * - Presents a menu of options until the admin chooses to exit.
- *
- * Roles supported: Scientist, Space Agency Representative, Policy Maker
- *
- * Example:
- * <pre>
- *   Enter Administrator name: Fabian
- *   ========== Administrator Console ==========
- *   1. Create User
- *   2. Manage User
- *   3. Delete User
- *   4. EXIT
- *   Select an option (e.g., 1):
- * </pre>
+ * Main menu allows selecting user type and redirects to appropriate console.
+ * Only the Administrator console may create users; other users must already exist.
  */
 public class RunSimulation {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter Administrator name: ");
-        String adminName = scanner.nextLine();
-        Administrator admin = new Administrator(adminName);
+        Administrator admin = null;
+        boolean exitProgram = false;
+
+        while (!exitProgram) {
+            System.out.println("\n========== Main Menu ==========");
+            System.out.println("1. Scientist");
+            System.out.println("2. Space Agency Representative");
+            System.out.println("3. Policy Maker");
+            System.out.println("4. Administrator");
+            System.out.println("5. Exit");
+            System.out.print("Select an option (1-5): ");
+
+            int mainChoice;
+            try {
+                mainChoice = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number between 1 and 5.");
+                continue;
+            }
+
+            switch (mainChoice) {
+                case 1: // Scientist
+                    if (admin == null) {
+                        System.out.println("No users exist yet. Please have an Administrator create users first.");
+                        break;
+                    }
+                    while (true) {
+                        System.out.print("Enter Scientist ID or 'B' to go back: ");
+                        String id = scanner.nextLine();
+                        if (id.equalsIgnoreCase("B")) break;
+                        User u = admin.getUserById(id);
+                        if (u instanceof Scientist) {
+                            System.out.print("Welcome, ");
+                            u.displayRole();
+                            break;
+                        } else {
+                            System.out.println("Invalid Scientist ID. Try again or 'B' to cancel.");
+                        }
+                    }
+                    break;
+
+                case 2: // Space Agency Representative
+                    if (admin == null) {
+                        System.out.println("No users exist yet. Please have an Administrator create users first.");
+                        break;
+                    }
+                    while (true) {
+                        System.out.print("Enter Representative ID or 'B' to go back: ");
+                        String id = scanner.nextLine();
+                        if (id.equalsIgnoreCase("B")) break;
+                        User u = admin.getUserById(id);
+                        if (u instanceof SpaceAgencyRepresentative) {
+                            System.out.print("Welcome, ");
+                            u.displayRole();
+                            break;
+                        } else {
+                            System.out.println("Invalid Representative ID. Try again or 'B' to cancel.");
+                        }
+                    }
+                    break;
+
+                case 3: // Policy Maker
+                    if (admin == null) {
+                        System.out.println("No users exist yet. Please have an Administrator create users first.");
+                        break;
+                    }
+                    while (true) {
+                        System.out.print("Enter Policy Maker ID or 'B' to go back: ");
+                        String id = scanner.nextLine();
+                        if (id.equalsIgnoreCase("B")) break;
+                        User u = admin.getUserById(id);
+                        if (u instanceof PolicyMaker) {
+                            System.out.print("Welcome, ");
+                            u.displayRole();
+                            break;
+                        } else {
+                            System.out.println("Invalid Policy Maker ID. Try again or 'B' to cancel.");
+                        }
+                    }
+                    break;
+
+                case 4: // Administrator
+                    if (admin == null) {
+                        System.out.print("Enter Administrator name: ");
+                        String adminName = scanner.nextLine();
+                        admin = new Administrator(adminName);
+                        System.out.println("Welcome back, " + admin.getRole() + " " + admin.getName() + "!");
+                        System.out.println("Your ID is: " + admin.getId());
+                    }
+                    runAdminConsole(admin, scanner);
+                    break;
+
+                case 5: // Exit
+                    exitProgram = true;
+                    System.out.println("Exiting system. Goodbye.");
+                    break;
+
+                default:
+                    System.out.println("Invalid option. Please choose a number between 1 and 5.");
+            }
+        }
+
+        scanner.close();
+    }
+
+    /**
+     * Runs the administrator console loop for creating, managing,
+     * and deleting users.
+     */
+    private static void runAdminConsole(Administrator admin, Scanner scanner) {
         boolean exit = false;
-
-        System.out.println("Welcome back, Administrator " + admin.getName() + "!");
-        System.out.println("Your user ID is: " + admin.getId());
-
         while (!exit) {
-            System.out.println("\n========== Administrator Console ==========");
+            System.out.println("\n=== Administrator Console ===");
             System.out.println("1. Create User");
             System.out.println("2. Manage User");
             System.out.println("3. Delete User");
-            System.out.println("4. EXIT");
-            System.out.print("Select an option (e.g., 1): ");
+            System.out.println("4. Back to Main Menu");
+            System.out.print("Select an option (1-4): ");
 
             int choice;
             try {
                 choice = Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input, choose a number between 1 and 4.");
+                System.out.println("Invalid input. Choose a number between 1 and 4.");
                 continue;
             }
 
@@ -103,14 +189,12 @@ public class RunSimulation {
 
                 case 4:
                     exit = true;
-                    System.out.println("You are now exiting the simulation. Goodbye.");
+                    System.out.println("\n***Exited Administrative Console Gracefully.***");
                     break;
 
                 default:
-                    System.out.println("Invalid option, choose a number between 1 and 4.");
+                    System.out.println("Invalid option. Choose a number between 1 and 4.");
             }
         }
-
-        scanner.close();
     }
 }
