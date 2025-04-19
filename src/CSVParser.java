@@ -30,7 +30,7 @@ public class CSVParser {
                 inQuotes = !inQuotes;               //Switches mode to include next comma in entry
             } else if (c == ',' && !inQuotes) {     //Comma outside of enclosing quotes means end of entry
                 fields.add(field.toString());       //Adds current field to list
-                field.setLength(0);       //Resets field builder
+                field.setLength(0);                 //Resets field builder
             } else {
                 field.append(c);                    //Adds current character to field string
             }
