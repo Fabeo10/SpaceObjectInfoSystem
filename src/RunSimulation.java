@@ -42,6 +42,40 @@ public class RunSimulation {
                         if (u instanceof Scientist) {
                             System.out.print("Welcome, ");
                             u.displayRole();
+                            System.out.println("What would you like to do:\n [1]Track Objects in Space [2]Assess Object Orbital Status [3]Go Back");
+                            int scientistChoice = Integer.parseInt(scanner.nextLine());
+                            while(scientistChoice != 3){
+                                if(scientistChoice == 1){
+                                    System.out.println("Select the type of object to track:");
+                                    System.out.println("ROCKET BODY | PAYLOAD | DEBRIS | UNKNOWN");
+                                    String object_type = scanner.nextLine();
+                                    ((Scientist)u).trackObjectsInSpace(object_type);
+                                }
+                                if(scientistChoice == 2){
+                                    System.out.println("Would you like to:");
+                                    System.out.println("[1]Assess Objects Still in Orbit [2]Assess Risk Level of Objects [3]Go Back");
+                                    int scientistChoice2 = Integer.parseInt(scanner.nextLine());
+                                    while(scientistChoice2 != 3){
+                                        if(scientistChoice2 == 1){
+                                            System.out.println("Asessing objects still in orbit...");
+                                            ((Scientist)u).assessStillInOrbit();
+                                            System.out.println("Records updated");
+                                        }
+                                        if(scientistChoice2 == 2){
+                                            System.out.println("Assessing risk level of objects...");
+                                            ((Scientist)u).assessRiskLevel();
+                                            System.out.println("Records updated");
+                                        }
+                                        System.out.println("What would you like to do next?");
+                                        System.out.println("[1]Assess Objects Still in Orbit [2]Assess Risk Level of Objects [3]Go Back");
+                                        scientistChoice2 = Integer.parseInt(scanner.nextLine());
+                                    }
+                                }
+                                System.out.println("What would you like to do:\n [1]Track Objects in Space [2]Assess Object Orbital Status [3]Go Back");
+                                scientistChoice = Integer.parseInt(scanner.nextLine());
+                            }
+                            System.out.println("Generating Updated Metrics...");
+                            ((Scientist)u).updateData("Updated_RSO_Metrics_test.csv");
                             break;
                         } else {
                             System.out.println("Invalid Scientist ID. Contact Administrator, try again or 'B' to return to the main menu.");

@@ -1,8 +1,4 @@
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.security.Timestamp;
-import java.util.List;
 
 public class SpaceObject{
     private String recordID;
@@ -51,36 +47,34 @@ public class SpaceObject{
                     this.geohash = geohash;
                     this.daysOld = daysOld;
                     this.conjunctionCount = conjunctionCount;
-
-                    if(((orbitType == null) || ((longitude > 180) ||
-                         (longitude < -180)) || (daysOld >= 15000)) &&
-                          (conjunctionCount == 0)){
-                            this.stillInOrbit = false;
-                    }else{
-                        this.stillInOrbit = true;   
-                    }
-
-                    double orbitalDrift = Math.abs((longitude - averageLongitude));
-                    if(orbitalDrift >= 50){
-                        this.riskLevel = "High";
-                        }
-                    else if(orbitalDrift < 50 && orbitalDrift >= 10){
-                        this.riskLevel = "Moderate";
-                        }
-                    else{
-                        this.riskLevel = "Low";
-                    }
-
-                    if(!object_type.equals("Unknown")){
-                        this.is_unk_obj = false;
-                    }else{
-                        this.is_unk_obj = true;
-                    }
                 }
 
     public String getOrbitType() {
         return orbitType;
     }
+    public double getLongitude() {
+        return longitude;
+    }
+    public double getAverageLongitude() {
+        return averageLongitude;
+    }
+    public String getObject_type() {
+        return object_type;
+    }
+    public int getDaysOld() {
+        return daysOld;
+    }
+    public long getConjunctionCount() {
+        return conjunctionCount;
+    }
+
+    public void setStillInOrbit(boolean stillInOrbit) {
+        this.stillInOrbit = stillInOrbit;
+    }
+    public void setRiskLevel(String riskLevel) {
+        this.riskLevel = riskLevel;
+    }
+
 
     @Override
     public String toString() {
@@ -97,23 +91,13 @@ public class SpaceObject{
     public String toCsv(){
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%.8f,%.8f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
                             recordID, norad_cat_id, sattelliteName, country, orbitType, object_type,
-                            launchYear, launchSite, longitude, averageLongitude, geohash, hrr_category,
+                            launchYear, launchSite, longitude, averageLongitude, escaped(geohash), hrr_category,
                             is_nominated, nominated_at, has_dossier, last_updated, justification,
                             focusedAnalysis, daysOld, conjunctionCount, is_unk_obj, allManeuvers, days_since_ob,
                             recentManeuvers, deltaV90day, has_sister_debris, stillInOrbit, riskLevel);
     }
 
-    public void writeRecordsToCsv(List<SpaceObject> records, String filename) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-            // Write header
-            writer.write("record_id,norad_cat_id,satellite_name,country,approximate_orbit_type,object_type,launch_year,launch_site,longitude,avg_longitude,geohash,HRR_Category,is_nominated,nominated_at,has_dossier,last_updated_at,justification,focused_analysis,days_old,conjunction_count,is_unk_object,all_maneuvers,days_since_ob,recent_maneuvers,deltaV_90day,has_sister_debris");
-            writer.newLine();
-
-            // Write each record
-            for (SpaceObject object : records) {
-                writer.write(object.toCsv());
-                writer.newLine();
-            }
-        }
+    public String escaped(String geohash){
+        return "\"" + geohash + "\"";
     }
 }

@@ -91,7 +91,7 @@ public class CSVParser {
     public static void writeRecordsToCsv(List<SpaceObject> records, String filename){
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
             // Write header
-            writer.write("record_id,norad_cat_id,satellite_name,country,approximate_orbit_type,object_type,launch_year,launch_site,longitude,avg_longitude,geohash,HRR_Category,is_nominated,nominated_at,has_dossier,last_updated_at,justification,focused_analysis,days_old,conjunction_count,is_unk_object,all_maneuvers,days_since_ob,recent_maneuvers,deltaV_90day,has_sister_debris");
+            writer.write("record_id,norad_cat_id,satellite_name,country,approximate_orbit_type,object_type,launch_year,launch_site,longitude,avg_longitude,geohash,HRR_Category,is_nominated,nominated_at,has_dossier,last_updated_at,justification,focused_analysis,days_old,conjunction_count,is_unk_object,all_maneuvers,days_since_ob,recent_maneuvers,deltaV_90day,has_sister_debris,still_in_orbit,risk_level");
             writer.newLine();
 
             // Write each record
@@ -103,7 +103,7 @@ public class CSVParser {
             System.out.println(e);
         }
     }
-    
+
     public static void main(String[] args){
         String fileName = "rso_metrics_test1.csv";
         long startTime = System.nanoTime();
