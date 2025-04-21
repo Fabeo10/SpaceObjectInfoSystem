@@ -47,7 +47,7 @@ public class Administrator extends User {
     public void createUser(String userType, String userName) {
         User u = UserFactory.createUser(userType, userName);
         users.put(u.getId(), u);
-        System.out.println("Created a user " + u.getRole() + ", with your name: " + u.getName() + " and ID: " + u.getId());
+        System.out.println("Created a user " + u.getRole() + ", with Name: " + u.getName() + " and ID: " + u.getId());
     }
 
     /**

@@ -12,12 +12,12 @@ public class RunSimulation {
         boolean exitProgram = false;
 
         while (!exitProgram) {
-            System.out.println("\n========== Main Menu ==========");
-            System.out.println("1. Scientist");
-            System.out.println("2. Space Agency Representative");
-            System.out.println("3. Policy Maker");
-            System.out.println("4. Administrator");
-            System.out.println("5. Exit");
+            System.out.println("\n========== Main Menu ==========\n"
+                    + "1. Scientist\n"
+                    + "2. Space Agency Representative\n"
+                    + "3. Policy Maker\n"
+                    + "4. Administrator\n"
+                    + "5. Exit");
             System.out.print("Select an option (1-5): ");
 
             int mainChoice;
@@ -32,53 +32,22 @@ public class RunSimulation {
                 case 1: // Scientist
                     if (admin == null) {
                         System.out.println("No users exist yet. Please have an Administrator create users first.");
-                        break;
-                    }
-                    while (true) {
-                        System.out.print("Enter Scientist ID or 'B' to go back: ");
-                        String id = scanner.nextLine();
-                        if (id.equalsIgnoreCase("B")) break;
-                        User u = admin.getUserById(id);
-                        if (u instanceof Scientist) {
-                            System.out.print("Welcome, ");
-                            u.displayRole();
-                            System.out.println("What would you like to do:\n [1]Track Objects in Space [2]Assess Object Orbital Status [3]Go Back");
-                            int scientistChoice = Integer.parseInt(scanner.nextLine());
-                            while(scientistChoice != 3){
-                                if(scientistChoice == 1){
-                                    System.out.println("Select the type of object to track:");
-                                    System.out.println("ROCKET BODY | PAYLOAD | DEBRIS | UNKNOWN");
-                                    String object_type = scanner.nextLine();
-                                    ((Scientist)u).trackObjectsInSpace(object_type);
-                                }
-                                if(scientistChoice == 2){
-                                    System.out.println("Would you like to:");
-                                    System.out.println("[1]Assess Objects Still in Orbit [2]Assess Risk Level of Objects [3]Go Back");
-                                    int scientistChoice2 = Integer.parseInt(scanner.nextLine());
-                                    while(scientistChoice2 != 3){
-                                        if(scientistChoice2 == 1){
-                                            System.out.println("Asessing objects still in orbit...");
-                                            ((Scientist)u).assessStillInOrbit();
-                                            System.out.println("Records updated");
-                                        }
-                                        if(scientistChoice2 == 2){
-                                            System.out.println("Assessing risk level of objects...");
-                                            ((Scientist)u).assessRiskLevel();
-                                            System.out.println("Records updated");
-                                        }
-                                        System.out.println("What would you like to do next?");
-                                        System.out.println("[1]Assess Objects Still in Orbit [2]Assess Risk Level of Objects [3]Go Back");
-                                        scientistChoice2 = Integer.parseInt(scanner.nextLine());
-                                    }
-                                }
-                                System.out.println("What would you like to do:\n [1]Track Objects in Space [2]Assess Object Orbital Status [3]Go Back");
-                                scientistChoice = Integer.parseInt(scanner.nextLine());
+                    } else {
+                        // ID validation before launching scientist console
+                        while (true) {
+                            System.out.print("Enter Scientist ID or 'B' to go back: ");
+                            String id = scanner.nextLine();
+                            if (id.equalsIgnoreCase("B")) break;
+                            User u = admin.getUserById(id);
+                            if (u instanceof Scientist) {
+                                Scientist s = (Scientist) u;
+                                System.out.print("\nWelcome, ");
+                                s.displayRole();
+                                runScientistConsole(s, scanner);
+                                break;
+                            } else {
+                                System.out.println("Invalid Scientist ID. Contact Administrator, try again or 'B' to return to the main menu.");
                             }
-                            System.out.println("Generating Updated Metrics...");
-                            ((Scientist)u).updateData("Updated_RSO_Metrics_test.csv");
-                            break;
-                        } else {
-                            System.out.println("Invalid Scientist ID. Contact Administrator, try again or 'B' to return to the main menu.");
                         }
                     }
                     break;
@@ -140,11 +109,87 @@ public class RunSimulation {
                     break;
 
                 default:
-                    System.out.println("Invalid option. Please choose a number between 1 and 5.");
+                    System.out.println("Invalid option. Choose a number between 1 and 5.");
             }
         }
 
         scanner.close();
+    }
+
+    /**
+     * Runs the scientist console loop: menu actions for a verified scientist.
+     */
+    private static void runScientistConsole(Scientist s, Scanner scanner) {
+        boolean exit = false;
+        while (!exit) {
+            System.out.println("\nScientist Console:"
+                    + "\n1. Track Objects in Space"
+                    + "\n2. Assess Object Orbital Status"
+                    + "\n3. Go Back");
+            System.out.print("Select an option (1-3): ");
+            int choice;
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number between 1 and 3.");
+                continue;
+            }
+
+            switch (choice) {
+                case 1:
+                    System.out.println("Select the type of object to track:");
+                    System.out.println("ROCKET BODY | PAYLOAD | DEBRIS | UNKNOWN");
+                    String objectType = scanner.nextLine();
+                    s.trackObjectsInSpace(objectType);
+                    break;
+
+                case 2:
+                    boolean subExit = false;
+                    while (!subExit) {
+                        System.out.println("\nWould you like to:"
+                                + "\n1. Assess Objects Still in Orbit"
+                                + "\n2. Assess Risk Level of Objects"
+                                + "\n3. Go Back");
+                        System.out.print("Select an option (1-3): ");
+                        int subChoice;
+                        try {
+                            subChoice = Integer.parseInt(scanner.nextLine());
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input. Please enter a number between 1 and 3.");
+                            continue;
+                        }
+
+                        switch (subChoice) {
+                            case 1:
+                                System.out.println("Assessing objects still in orbit...");
+                                s.assessStillInOrbit();
+                                System.out.println("Records updated");
+                                break;
+                            case 2:
+                                System.out.println("Assessing risk level of objects...");
+                                s.assessRiskLevel();
+                                System.out.println("Records updated");
+                                break;
+                            case 3:
+                                subExit = true;
+                                break;
+                            default:
+                                System.out.println("Invalid option. Please try again.");
+                        }
+                    }
+                    break;
+
+                case 3:
+                    exit = true;
+                    break;
+
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+
+        System.out.println("Generating Updated Metrics...");
+        s.updateData("Updated_RSO_Metrics_test.csv");
     }
 
     /**
@@ -154,11 +199,11 @@ public class RunSimulation {
     private static void runAdminConsole(Administrator admin, Scanner scanner) {
         boolean exit = false;
         while (!exit) {
-            System.out.println("\n=== Administrator Console ===");
-            System.out.println("1. Create User");
-            System.out.println("2. Manage User");
-            System.out.println("3. Delete User");
-            System.out.println("4. Back to Main Menu");
+            System.out.println("\n=== Administrator Console ==="
+                    + "\n1. Create User"
+                    + "\n2. Manage User"
+                    + "\n3. Delete User"
+                    + "\n4. Back to Main Menu");
             System.out.print("Select an option (1-4): ");
 
             int adminChoice;
