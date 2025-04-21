@@ -13,15 +13,18 @@ import java.util.List;
  * </pre>
  * </p>
  *
- * @author Fabian
- * @author David
+ * @author Fabian Ornelas
+ * @author David Jones
  * @version 1.0
  */
 public class Scientist extends User {
+    /** 
+     * A list containing records of space objects loaded from a CSV file.
+     */
     private List<SpaceObject> entries;
 
     /**
-     * Constructs a Scientist with the specified name.
+     * Constructs a Scientist with the specified name and loads space object data.
      *
      * @param name the name of the scientist
      */
@@ -38,10 +41,19 @@ public class Scientist extends User {
         System.out.println("Scientist " + name + "!");
     }
 
+    /**
+     * Loads the space object data from a CSV file into the entries list.
+     */
     public void loadData(){
         this.entries = CSVParser.readCsvFile("rso_metrics.csv");
     }
 
+    /**
+     * Updates and writes the current space object data to the specified file.
+     * Also prints the time taken to perform the update.
+     *
+     * @param filename the file to which data will be written
+     */
     public void updateData(String filename){
         long startTime = System.nanoTime();
         CSVParser.writeRecordsToCsv(entries, filename);
@@ -50,6 +62,12 @@ public class Scientist extends User {
         System.out.println("Time to load " + entries.size() + " entries: " + updateTime + "ms");
     }
 
+    /**
+     * Filters and displays all space objects that match a specified object type.
+     * Also prints the time taken to complete the filtering and display.
+     *
+     * @param object_type the type of object to track (e.g., "debris", "satellite")
+     */
     public void trackObjectsInSpace(String object_type){
         long startTime = System.nanoTime();
         List<SpaceObject> filteredEntries = new ArrayList<>();
@@ -66,6 +84,10 @@ public class Scientist extends User {
         System.out.println("Time to track " + filteredEntries.size() + " objects of this type in space: " + trackingTime + "ms");
     }
 
+    /**
+     * Filters and displays all space objects currently in Low Earth Orbit (LEO).
+     * Also prints the time taken to complete the filtering and display.
+     */
     public void trackObjectsInLEO(){
         long startTime = System.nanoTime();
         List<SpaceObject> filteredEntries = new ArrayList<>();
@@ -82,6 +104,11 @@ public class Scientist extends User {
         System.out.println("Time to track " + filteredEntries.size() + " in LEO: " + trackLEOtime + "ms");
     }
 
+    /**
+     * Assesses the risk level of each space object based on its orbital drift.
+     * Risk levels are categorized as Low, Moderate, or High.
+     * Also prints the time taken to complete the assessment.
+     */
     public void assessRiskLevel(){
         long startTime = System.nanoTime();
         for(SpaceObject object : entries){
@@ -101,6 +128,11 @@ public class Scientist extends User {
         System.out.println("Time to assess the risk level of " + entries.size() + " entries: " + assesssRiskTime + "ms");
     }
 
+    /**
+     * Evaluates whether each space object is still in orbit based on various conditions,
+     * such as orbit type, longitude, age, and conjunction count.
+     * Also prints the time taken to complete the evaluation.
+     */
     public void assessStillInOrbit(){
         long startTime = System.nanoTime();
         for(SpaceObject object : entries){
@@ -108,7 +140,7 @@ public class Scientist extends User {
                 (object.getLongitude() < -180)) || (object.getDaysOld() >= 15000)) &&
                 (object.getConjunctionCount() == 0)){
                     object.setStillInOrbit(false);
-            }else{
+            } else {
                     object.setStillInOrbit(true);   
             }
         }
