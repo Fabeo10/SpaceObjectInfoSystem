@@ -9,7 +9,9 @@ import java.util.List;
  * Used for reading a list of entries from a file which are stored in Comma Separated Value format
  * while allowing for entries to contain escaped commas so long as they are enclosed in double quotes.
  * 
- * @author David Jones, Fabian Ornelas
+ * @author David Jones
+ * @author Fabian Ornelas
+ * @version 1.0
  */
 public class CSVParser {
     /**

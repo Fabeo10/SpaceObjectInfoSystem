@@ -19,8 +19,8 @@
  * to ensure uniqueness within a single runtime session.
  * </p>
  *
- * @author Fabian
- * @author David
+ * @author Fabian Ornelas
+ * @author David Jones
  * @version 1.0
  */
 public abstract class User {

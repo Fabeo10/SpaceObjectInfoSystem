@@ -20,8 +20,8 @@ import java.util.Map;
  * </pre>
  * </p>
  *
- * @author Fabian
- * @author David
+ * @author Fabian Ornelas
+ * @author David Jones
  * @version 1.0
  */
 public class Administrator extends User {
