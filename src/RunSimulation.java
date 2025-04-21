@@ -97,7 +97,7 @@ public class RunSimulation {
                         System.out.print("Enter Administrator name: ");
                         String adminName = scanner.nextLine();
                         admin = new Administrator(adminName);
-                        System.out.println("Welcome back, " + admin.getRole() + " " + admin.getName() + "!");
+                        System.out.println("Welcome, " + admin.getRole() + " " + admin.getName() + "!");
                         System.out.println("Your ID is: " + admin.getId());
                     }
                     runAdminConsole(admin, scanner);
@@ -122,20 +122,21 @@ public class RunSimulation {
     private static void runScientistConsole(Scientist s, Scanner scanner) {
         boolean exit = false;
         while (!exit) {
-            System.out.println("\nScientist Console:"
+            System.out.println("\n===== Scientist Console ====="
                     + "\n1. Track Objects in Space"
                     + "\n2. Assess Object Orbital Status"
                     + "\n3. Go Back");
             System.out.print("Select an option (1-3): ");
-            int choice;
+
+            int scientistChoice;
             try {
-                choice = Integer.parseInt(scanner.nextLine());
+                scientistChoice = Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a number between 1 and 3.");
                 continue;
             }
 
-            switch (choice) {
+            switch (scientistChoice) {
                 case 1:
                     System.out.println("Select the type of object to track:");
                     System.out.println("ROCKET BODY | PAYLOAD | DEBRIS | UNKNOWN");
@@ -199,7 +200,7 @@ public class RunSimulation {
     private static void runAdminConsole(Administrator admin, Scanner scanner) {
         boolean exit = false;
         while (!exit) {
-            System.out.println("\n=== Administrator Console ==="
+            System.out.println("\n===== Administrator Console ====="
                     + "\n1. Create User"
                     + "\n2. Manage User"
                     + "\n3. Delete User"
