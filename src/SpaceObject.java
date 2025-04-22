@@ -44,13 +44,13 @@ public class SpaceObject {
 
     // Analytical metrics
     private int daysOld;
-    private long conjunctionCount = -1;
+    private long conjunctionCount;
     private boolean is_unk_obj;
-    private String allManeuvers = "";
-    private int days_since_ob = -1;
-    private String recentManeuvers = "";
-    private double deltaV90day = -1.0;
-    private boolean has_sister_debris = false;
+    private String allManeuvers;
+    private int days_since_ob;
+    private String recentManeuvers;
+    private double deltaV90day;
+    private boolean has_sister_debris;
 
     // Risk and status assessments
     private boolean stillInOrbit;
@@ -171,14 +171,14 @@ public class SpaceObject {
      */
     @Override
     public String toString() {
-        return "  " + recordID + "  " + norad_cat_id +  "  " + sattelliteName + "  " +
-                country + "  " + orbitType + "  " + object_type + "  " + launchYear + "  " + 
-                launchSite + "  " + longitude + "  " + averageLongitude + "  " +
-                geohash + "  " + hrr_category + "  " + is_nominated + "  " + nominated_at + "  " +
-                has_dossier + "  " + last_updated + "  " + justification + "  " + focusedAnalysis + "  " +
-                daysOld + "  " + conjunctionCount + "  " + is_unk_obj + "  " + allManeuvers + "  " +
-                days_since_ob + "  " + recentManeuvers + "  " + deltaV90day + "  " + has_sister_debris + "  " +
-                stillInOrbit + "  " + riskLevel;
+        return " " + recordID + " " + norad_cat_id +  " " + sattelliteName + " " +
+                country + " " + orbitType + " " + object_type + " " + launchYear + " " + 
+                launchSite + " " + longitude + " " + averageLongitude + " " +
+                geohash + " " + hrr_category + " " + is_nominated + " " + nominated_at + " " +
+                has_dossier + " " + last_updated + " " + justification + " " + focusedAnalysis + " " +
+                daysOld + " " + conjunctionCount + " " + is_unk_obj + " " + allManeuvers + " " +
+                days_since_ob + " " + recentManeuvers + " " + deltaV90day + " " + has_sister_debris + " " +
+                stillInOrbit + " " + riskLevel;
     }
 
     /**

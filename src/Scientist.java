@@ -31,6 +31,7 @@ public class Scientist extends User {
     public Scientist(String name) {
         super(name, "Scientist");
         loadData();
+        Log.updateLog("Scientist " + name + " loaded rso_metrics");
     }
 
     /**
