@@ -90,6 +90,12 @@ public class CSVParser {
         return entries;
     }
 
+    /**
+     * Writes a formatted header followed by a CSV formatted list of entries into a new CSV file
+     * 
+     * @param records - The formatted list of records to be written into the csv
+     * @param filename - The name of the newly created CSV file
+     */
     public static void writeRecordsToCsv(List<SpaceObject> records, String filename){
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
             // Write header
@@ -104,20 +110,5 @@ public class CSVParser {
         }catch(IOException e){
             System.out.println(e);
         }
-    }
-
-    public static void main(String[] args){
-        String fileName = "rso_metrics_test1.csv";
-        long startTime = System.nanoTime();
-        List<SpaceObject> testList = readCsvFile(fileName);
-        for(SpaceObject x : testList){
-            if(x.getOrbitType().equals("LEO")){
-                System.out.println(x);
-            }
-        }
-        writeRecordsToCsv(testList, "rso_metrics_test2.csv");
-        long endTime = System.nanoTime();
-        long totalTime = (endTime - startTime) / 1000000;
-        System.out.println("Elapsed time: " + totalTime);
     }
 }
