@@ -46,7 +46,7 @@ public class Scientist extends User {
      * Loads the space object data from a CSV file into the entries list.
      */
     public void loadData(){
-        this.entries = CSVParser.readCsvFile("rso_metrics.csv");
+        this.entries = CSVParser.readCsvFile("./rso_metrics.csv");
     }
 
     /**
