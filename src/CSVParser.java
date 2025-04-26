@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 /**
  * Used for reading a list of entries from a file which are stored in Comma Separated Value format
@@ -14,6 +15,7 @@ import java.util.List;
  * @version 1.0
  */
 public class CSVParser {
+    private static HashMap<String, Integer> headers;
     /**
      * Parses a String of data from a CSV file into a list of fields, allowing for
      * escaped commas which are enclosed by double quotes
@@ -50,21 +52,33 @@ public class CSVParser {
      * @return A new Space Object with the given attributes
      */
     public static SpaceObject spaceObjectFromEntry(List<String> fields){
-        String recordID = fields.get(0);
-        String sattelliteName = fields.get(2);
-        String country = fields.get(3);
-        String orbitType = fields.get(4);
-        String object_type = fields.get(5);
-        int launchYear = Integer.parseInt(fields.get(6));
-        String launchSite = fields.get(7);
-        double longitude = Double.parseDouble(fields.get(8));
-        double averageLongitude = Double.parseDouble(fields.get(9));
-        String geohash = fields.get(10);
-        int daysOld = Integer.parseInt(fields.get(18));
-        long conjunctionCount = Long.parseLong(fields.get(19));
+        // Basic attributes for identification and location
+        String recordID = getField(fields, "record_id");
+        String sattelliteName = getField(fields, "satellite_name");
+        String country = getField(fields, "country");
+        String orbitType = getField(fields, "approximate_orbit_type");
+        String object_type = getField(fields, "object_type");
+        int launchYear = Integer.parseInt(getField(fields, "launch_year"));
+        String launchSite = getField(fields, "launch_site");
+        double longitude = Double.parseDouble(getField(fields, "longitude"));
+        double averageLongitude = Double.parseDouble(getField(fields, "avg_longitude"));
+        String geohash = getField(fields, "geohash");
+
+        // Analytical metrics
+        int daysOld = Integer.parseInt(getField(fields, "days_old"));
+        long conjunctionCount = Long.parseLong(getField(fields, "conjunction_count"));
+
         return new SpaceObject(recordID, sattelliteName, country, orbitType, object_type,
                             launchYear, launchSite, longitude, averageLongitude,
                             geohash, daysOld, conjunctionCount);
+    }
+
+    private static String getField(List<String> fields, String columnName) {
+        Integer index = headers.get(columnName.toLowerCase());
+        if (index == null || index >= fields.size()) {
+            return ""; // or throw an error, depending on how strict you want to be
+        }
+        return fields.get(index);
     }
 
     /**
@@ -76,8 +90,15 @@ public class CSVParser {
     public static List<SpaceObject> readCsvFile(String filename) {
         List<SpaceObject> entries = new ArrayList<>();                                 //Fields are stored as a list of Strings
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            reader.readLine();                                                         //Discards the header row   
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {   
+            String headerLine = reader.readLine();                                     
+            List<String> headerFields = parseLine(headerLine); 
+
+            headers = new HashMap<>();                                                 
+            for (int i = 0; i < headerFields.size(); i++) {                            
+                headers.put(headerFields.get(i).toLowerCase(), i);                     //Parses the header line into a list of fields, mapped to integers
+            }
+        
             String line;
             while ((line = reader.readLine()) != null) {
                 List<String> entry = parseLine(line);
