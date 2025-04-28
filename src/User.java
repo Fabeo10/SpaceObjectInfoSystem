@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 /**
  * The {@code User} abstract class defines the core behavior and common functionality
  * for all user types in the Space Object Info System.
@@ -24,9 +26,7 @@
  * @version 1.0
  */
 public abstract class User {
-    private static int idCounter = 0;
-
-    protected final String id;
+    protected String password;
     protected String name;
     protected String role;
 
@@ -38,18 +38,8 @@ public abstract class User {
      * @param role the role of the user
      */
     public User(String name, String role) {
-        this.id = String.valueOf(++idCounter);
         this.name = name;
         this.role = role;
-    }
-
-    /**
-     * Returns the unique ID of the user.
-     *
-     * @return the user's ID
-     */
-    public String getId() {
-        return id;
     }
 
     /**
@@ -71,10 +61,42 @@ public abstract class User {
     }
 
     /**
+     * Gets the password of the user
+     * @return the user's password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Sets the users password
+     * @param password
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /**
      * Displays the role associated with the user.
      * <p>
      * Each subclass must implement this method to define how the role is displayed.
      * </p>
      */
     public abstract void displayRole();
+
+    public void promptNewPassword(){
+        Scanner scnr = new Scanner(System.in);
+        System.out.println("Please enter your password:");
+        String password = scnr.nextLine();
+        scnr.close();
+        this.password = password;
+    }
+
+    /**
+     * Formats the user data in Comma Separated Value format
+     * @return the formatted String
+     */
+    public String toCsv(){
+        return String.format("%s,%s,%s",name, role, password);
+    }
 }
