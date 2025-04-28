@@ -1,4 +1,3 @@
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -24,9 +23,9 @@ import java.util.Map;
  * @author David Jones
  * @version 1.0
  */
-public class Administrator extends User {
-
-    private final Map<String, User> users = new HashMap<>();
+public class Administrator extends User{
+    private DataManager manager;
+    private Map<String, User> users;
 
     /**
      * Constructs an Administrator with the given name.
@@ -38,31 +37,57 @@ public class Administrator extends User {
     }
 
     /**
-     * Creates a new user of the specified type and name, stores it by its ID,
-     * and prints confirmation.
-     *
-     * @param userType the type of user to create (e.g. "Scientist", "Policy Maker")
-     * @param userName the name of the new user
+     * Creates a new user of userType with userName, thens adds the new User to the current list, by Name
+     * 
+     * @param userType - The type of user to be created i.e. Scientist, Administrator, Space Agency Representative
+     * @param userName - The name to be assigned to the newly created User
      */
     public void createUser(String userType, String userName) {
-        User u = UserFactory.createUser(userType, userName);
-        users.put(u.getId(), u);
-        System.out.println("Created a user " + u.getRole() + ", with Name: " + u.getName() + " and ID: " + u.getId());
+        if (userType == null || userName == null) {
+            throw new IllegalArgumentException("userType and userName must not be null");
+        }
+        User u;
+        switch (userType.toLowerCase()) {
+
+            case "scientist":
+                u = new Scientist(userName);
+                u.promptNewPassword();
+                users.put(u.getName(), u);
+                break;
+
+            case "space agency representative":
+            case "spaceagencyrepresentative":
+                u = new SpaceAgencyRepresentative(userName);
+                u.promptNewPassword();
+                users.put(u.getName(), u);
+                break;
+
+            case "policy maker":
+            case "policymaker":
+                u = new PolicyMaker(userName);
+                u.promptNewPassword();
+                users.put(u.getName(), u);
+                break;
+                
+            default:
+                throw new IllegalArgumentException("Invalid User Type: " + userType);
+        }
+        manager.setUsers(users);
     }
 
     /**
-     * Retrieves a user by ID and invokes its displayRole().
+     * Retrieves a user by Name and invokes its displayRole().
      *
-     * @param id the unique ID of the user to manage
+     * @param userName the unique Name of the user to manage
      */
-    public void manageUser(String id) {
-        User u = users.get(id);
+    public void manageUser(String userName) {
+        User u = users.get(userName);
         if (u != null) {
             System.out.print("Managing user: ");
             u.displayRole();
             // (additional management logic could go here)
         } else {
-            System.out.println("No user found with ID: " + id);
+            System.out.println("No user found with ID: " + userName);
         }
     }
 
@@ -71,11 +96,12 @@ public class Administrator extends User {
      *
      * @param id the unique ID of the user to delete
      */
-    public void deleteUser(String id) {
-        if (users.remove(id) != null) {
-            System.out.println("Deleted user with ID: " + id);
+    public void deleteUser(String userName) {
+        if (users.remove(userName) != null) {
+            System.out.println("Deleted user with ID: " + userName);
+            manager.setUsers(users);
         } else {
-            System.out.println("No user found with ID: " + id);
+            System.out.println("No user found with ID: " + userName);
         }
     }
 
@@ -85,7 +111,7 @@ public class Administrator extends User {
     public void displayAllUsers() {
         System.out.println("=== Registered Users ===");
         users.values()
-             .forEach(u -> System.out.println("- " + u.getName() + " (" + u.getRole() + ") ID: " + u.getId()));
+             .forEach(u -> System.out.println("- " + u.getName() + " (" + u.getRole() + ") Password: " + u.getPassword()));
     }
 
     /**
@@ -94,15 +120,24 @@ public class Administrator extends User {
     @Override
     public void displayRole() {
         System.out.println("Administrator: " + name);
+
     }
 
     /**
-     * Retrieves a user by their unique ID.
+     * Retrieves a user by their unique Name.
      *
-     * @param id the ID of the user
+     * @param name the Name of the user
      * @return the User object, or null if not found
      */
-    public User getUserById(String id) {
-        return users.get(id);
+    public User getUserByName(String name) {
+        return users.get(name);
+    }
+
+    public void setManager(DataManager manager) {
+        this.manager = manager;
+    }
+
+    public void setUsers(Map<String, User> users) {
+        this.users = users;
     }
 }
