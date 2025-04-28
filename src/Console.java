@@ -1,5 +1,4 @@
 import java.util.Scanner;
-
 /**
  * Handles UI for menu inputs and data manipulation
  * 
@@ -9,11 +8,11 @@ import java.util.Scanner;
  * @version 1.0
  */
 public class Console {
-        /**
+     /**
      * Runs the administrator console loop for creating, managing,
      * and deleting users.
      */
-    public void runAdminConsole(Administrator admin, Scanner scanner) {
+    public void runAdminConsole(Administrator admin, Scanner scanner, DataManager manager) {
         boolean exit = false;
         while (!exit) {
             System.out.println("\n===== Administrator Console ====="
@@ -54,15 +53,15 @@ public class Console {
                 case 2:
                     while (true) {
                         System.out.print("Enter the User ID to manage or 'B' to go back: ");
-                        String manageId = scanner.nextLine();
-                        if (manageId.equalsIgnoreCase("B")) {
+                        String name = scanner.nextLine();
+                        if (name.equalsIgnoreCase("B")) {
                             break;
                         }
-                        if (admin.getUserById(manageId) != null) {
-                            admin.manageUser(manageId);
+                        if (admin.getUserByName(name) != null) {
+                            admin.manageUser(name);
                             break;
                         } else {
-                            System.out.println("No user found with ID: " + manageId + ". Try again or 'B' to discard operation and return to admin console.");
+                            System.out.println("No user found with Name: " + name + ". Try again or 'B' to discard operation and return to admin console.");
                         }
                     }
                     break;
@@ -70,21 +69,22 @@ public class Console {
                 case 3:
                     while (true) {
                         System.out.print("Enter the User ID to delete or 'B' to go back: ");
-                        String deleteId = scanner.nextLine();
-                        if (deleteId.equalsIgnoreCase("B")) {
+                        String name = scanner.nextLine();
+                        if (name.equalsIgnoreCase("B")) {
                             break;
                         }
-                        if (admin.getUserById(deleteId) != null) {
-                            admin.deleteUser(deleteId);
+                        if (admin.getUserByName(name) != null) {
+                            admin.deleteUser(name);
                             break;
                         } else {
-                            System.out.println("No user found with ID: " + deleteId + ". Try again or 'B' to discard operation and return to admin console.");
+                            System.out.println("No user found with Name: " + name + ". Try again or 'B' to discard operation and return to admin console.");
                         }
                     }
                     break;
 
                 case 4:
                     exit = true;
+                    manager.updateUserData("USERS.csv");
                     System.out.println("\n***Exited Administrative Console Gracefully.***");
                     break;
 
@@ -94,10 +94,10 @@ public class Console {
         }
     }
 
-        /**
+     /**
      * Runs the scientist console loop: menu actions for a verified scientist.
      */
-    public void runScientistConsole(Scientist s, Scanner scanner) {
+    public void runScientistConsole(Scientist s, Scanner scanner, DataManager manager) {
         boolean exit = false;
         while (!exit) {
             System.out.println("\n===== Scientist Console ====="
@@ -184,7 +184,7 @@ public class Console {
 
         System.out.println("Generating Updated Metrics...");
         Log.updateLog("Writing Updated_RSO_Metrics.csv...");
-        s.updateData("Updated_RSO_Metrics_test.csv");
+        manager.updateMetricData("Updated_RSO_Metrics_test.csv");
         Log.updateLog("Update complete");
     }
 }

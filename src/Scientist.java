@@ -17,12 +17,9 @@ import java.util.List;
  * @author David Jones
  * @version 1.0
  */
-public class Scientist extends User {
-    /** 
-     * A list containing records of space objects loaded from a CSV file.
-     */
+public class Scientist extends User{
+    private DataManager manager;
     private List<SpaceObject> entries;
-
     /**
      * Constructs a Scientist with the specified name and loads space object data.
      *
@@ -30,8 +27,14 @@ public class Scientist extends User {
      */
     public Scientist(String name) {
         super(name, "Scientist");
-        loadData();
-        Log.updateLog("Scientist " + name + " loaded rso_metrics");
+    }
+
+    public void setManager(DataManager manager) {
+        this.manager = manager;
+    }
+    
+    public void setEntries(List<SpaceObject> entries) {
+        this.entries = entries;
     }
 
     /**
@@ -40,27 +43,6 @@ public class Scientist extends User {
     @Override
     public void displayRole() {
         System.out.println("Scientist " + name + "!");
-    }
-
-    /**
-     * Loads the space object data from a CSV file into the entries list.
-     */
-    public void loadData(){
-        this.entries = CSVParser.readCsvFile("./rso_metrics.csv");
-    }
-
-    /**
-     * Updates and writes the current space object data to the specified file.
-     * Also prints the time taken to perform the update.
-     *
-     * @param filename the file to which data will be written
-     */
-    public void updateData(String filename){
-        long startTime = System.nanoTime();
-        CSVParser.writeRecordsToCsv(entries, filename);
-        long endTime = System.nanoTime();
-        long updateTime = (endTime - startTime) / 1000000;
-        System.out.println("Time to load " + entries.size() + " entries: " + updateTime + "ms");
     }
 
     /**
@@ -124,6 +106,7 @@ public class Scientist extends User {
                 object.setRiskLevel("Low");
             }
         }
+        manager.setRso_metrics(entries);
         long endTime = System.nanoTime();
         long assesssRiskTime = (endTime - startTime) / 1000000;
         System.out.println("Time to assess the risk level of " + entries.size() + " entries: " + assesssRiskTime + "ms");
@@ -145,6 +128,7 @@ public class Scientist extends User {
                     object.setStillInOrbit(true);   
             }
         }
+        manager.setRso_metrics(entries);
         long endTime = System.nanoTime();
         long assessOrbitalStatusTime = (endTime - startTime) / 1000000;
         System.out.println("Time to assess the orbital status of " + entries.size() + " entries:" + assessOrbitalStatusTime + "ms");
