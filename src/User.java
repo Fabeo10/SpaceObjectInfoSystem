@@ -84,11 +84,9 @@ public abstract class User {
      */
     public abstract void displayRole();
 
-    public void promptNewPassword(){
-        Scanner scnr = new Scanner(System.in);
-        System.out.println("Please enter your password:");
-        String password = scnr.nextLine();
-        scnr.close();
+    public void promptNewPassword(Scanner scanner){
+        System.out.println("Please enter new user's password:");
+        String password = scanner.nextLine();
         this.password = password;
     }
 

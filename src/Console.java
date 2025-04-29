@@ -15,13 +15,12 @@ public class Console {
     public void runAdminConsole(Administrator admin, Scanner scanner, DataManager manager) {
         boolean exit = false;
         while (!exit) {
-            System.out.println("\n===== Administrator Console ====="
+            System.out.println("===== Administrator Console ====="
                     + "\n1. Create User"
                     + "\n2. Manage User"
                     + "\n3. Delete User"
                     + "\n4. Back to Main Menu");
-            System.out.print("Select an option (1-4): ");
-
+            System.out.println("Select an option (1-4): ");
             int adminChoice;
             try {
                 adminChoice = Integer.parseInt(scanner.nextLine());
@@ -32,16 +31,16 @@ public class Console {
 
             switch (adminChoice) {
                 case 1:
-                    System.out.print("Enter User Name: ");
+                    System.out.println("Enter User Name: ");
                     String nameIn = scanner.nextLine();
                     while (true) {
-                        System.out.print("Enter User Type [Scientist, Space Agency Representative, Policy Maker] or 'B' to go back: ");
+                        System.out.println("Enter User Type [Scientist, Space Agency Representative, Policy Maker] or 'B' to go back: ");
                         String typeIn = scanner.nextLine();
                         if (typeIn.equalsIgnoreCase("B")) {
                             break;
                         }
                         try {
-                            admin.createUser(typeIn, nameIn);
+                            admin.createUser(typeIn, nameIn, scanner);
                             break;
                         } catch (IllegalArgumentException e) {
                             System.out.println(e.getMessage());
@@ -52,7 +51,7 @@ public class Console {
 
                 case 2:
                     while (true) {
-                        System.out.print("Enter the User ID to manage or 'B' to go back: ");
+                        System.out.println("Enter the User's Name to manage or 'B' to go back: ");
                         String name = scanner.nextLine();
                         if (name.equalsIgnoreCase("B")) {
                             break;
@@ -68,7 +67,7 @@ public class Console {
 
                 case 3:
                     while (true) {
-                        System.out.print("Enter the User ID to delete or 'B' to go back: ");
+                        System.out.println("Enter the User's Name to delete or 'B' to go back: ");
                         String name = scanner.nextLine();
                         if (name.equalsIgnoreCase("B")) {
                             break;
@@ -84,7 +83,6 @@ public class Console {
 
                 case 4:
                     exit = true;
-                    manager.updateUserData("USERS.csv");
                     System.out.println("\n***Exited Administrative Console Gracefully.***");
                     break;
 
@@ -92,6 +90,7 @@ public class Console {
                     System.out.println("Invalid option. Choose a number between 1 and 4.");
             }
         }
+        manager.updateUserData("USERS.csv");
     }
 
      /**
@@ -104,7 +103,7 @@ public class Console {
                     + "\n1. Track Objects in Space"
                     + "\n2. Assess Object Orbital Status"
                     + "\n3. Go Back");
-            System.out.print("Select an option (1-3): ");
+            System.out.println("Select an option (1-3): ");
 
             int scientistChoice;
             try {
@@ -184,7 +183,7 @@ public class Console {
 
         System.out.println("Generating Updated Metrics...");
         Log.updateLog("Writing Updated_RSO_Metrics.csv...");
-        manager.updateMetricData("Updated_RSO_Metrics_test.csv");
+        manager.updateMetricData("Updated_RSO_Metrics.csv");
         Log.updateLog("Update complete");
     }
 }
