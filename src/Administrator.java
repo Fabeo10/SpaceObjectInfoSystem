@@ -1,4 +1,5 @@
 import java.util.Map;
+import java.util.Scanner;
 
 /**
  * Represents an Administrator who can create, manage and delete users within the system.
@@ -42,7 +43,7 @@ public class Administrator extends User{
      * @param userType - The type of user to be created i.e. Scientist, Administrator, Space Agency Representative
      * @param userName - The name to be assigned to the newly created User
      */
-    public void createUser(String userType, String userName) {
+    public void createUser(String userType, String userName, Scanner scanner) {
         if (userType == null || userName == null) {
             throw new IllegalArgumentException("userType and userName must not be null");
         }
@@ -51,21 +52,21 @@ public class Administrator extends User{
 
             case "scientist":
                 u = new Scientist(userName);
-                u.promptNewPassword();
+                u.promptNewPassword(scanner);
                 users.put(u.getName(), u);
                 break;
 
             case "space agency representative":
             case "spaceagencyrepresentative":
                 u = new SpaceAgencyRepresentative(userName);
-                u.promptNewPassword();
+                u.promptNewPassword(scanner);
                 users.put(u.getName(), u);
                 break;
 
             case "policy maker":
             case "policymaker":
                 u = new PolicyMaker(userName);
-                u.promptNewPassword();
+                u.promptNewPassword(scanner);
                 users.put(u.getName(), u);
                 break;
                 

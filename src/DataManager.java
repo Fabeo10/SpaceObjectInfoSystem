@@ -104,7 +104,7 @@ public class DataManager {
      * Loads the space object data from a CSV file into the entries list.
      */
     public void loadMetricData(){
-        this.rso_metrics = CSVParser.readCsvFile("rso_metrics_columns_jumbled.csv");
+        this.rso_metrics = CSVParser.readCsvFile("rso_metrics.csv");
     }
 
     /**
