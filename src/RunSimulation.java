@@ -13,35 +13,48 @@ public class RunSimulation {
     public static void main(String[] args) {
         DataManager userManager = new DataManager("users");
         DataManager metricsManager = new DataManager("metrics");
-        Log.updateLog("Sytem initialized");
+        userManager.updateLog("Sytem initialized");
 
         Scanner scanner = new Scanner(System.in);
         Administrator loginAdmin = new Administrator("loginAdmin");
         loginAdmin.setManager(userManager);
-        loginAdmin.setUsers(userManager.getUsers());
-        System.out.println("Please enter your username, then enter your password: ");
-
-        String loginAttemptName = scanner.nextLine();
-        String loginAttemptPassword = scanner.nextLine();
-        boolean loginSuccess = userManager.validateLogin(loginAttemptName, loginAttemptPassword);
-
-        if(loginSuccess){
-            Console console = new Console();
-            User loggedInUser = loginAdmin.getUserByName(loginAttemptName);
-            if(loggedInUser.getRole().equalsIgnoreCase("scientist")){
-                Scientist user = (Scientist) loggedInUser;
-                user.setManager(metricsManager);
-                user.setEntries(metricsManager.getRso_metrics());
-                console.runScientistConsole(user, scanner, metricsManager);
+        boolean exit = false;
+        while(!exit){
+            loginAdmin.setUsers(userManager.getUsers());
+            System.out.println("Please enter your Name (or exit): ");
+            String loginAttemptName = scanner.nextLine();
+            if(loginAttemptName.equalsIgnoreCase("exit")){
+                exit = true;
+                break;
             }
-            else if(loggedInUser.getRole().equalsIgnoreCase("administrator")){
-                Administrator user = (Administrator) loggedInUser;
-                user.setManager(userManager);
-                user.setUsers(userManager.getUsers());
-                console.runAdminConsole(user, scanner, userManager);
-            }
-            else{
-                System.out.println("Error reaching console");
+            System.out.println("Please enter your password: ");
+            String loginAttemptPassword = scanner.nextLine();
+            boolean loginSuccess = userManager.validateLogin(loginAttemptName, loginAttemptPassword);
+
+            if(loginSuccess){
+                Console console = new Console();
+                User loggedInUser = loginAdmin.getUserByName(loginAttemptName);
+                if(loggedInUser.getRole().equalsIgnoreCase("scientist")){
+                    Scientist user = (Scientist) loggedInUser;
+                    user.setManager(metricsManager);
+                    user.setEntries(metricsManager.getRso_metrics());
+                    console.runScientistConsole(user, scanner, metricsManager);
+                }
+                else if(loggedInUser.getRole().equalsIgnoreCase("administrator")){
+                    Administrator user = (Administrator) loggedInUser;
+                    user.setManager(userManager);
+                    user.setUsers(userManager.getUsers());
+                    console.runAdminConsole(user, scanner, userManager);
+                }
+                else if(loggedInUser.getRole().equalsIgnoreCase("Space Agency Representative")){
+                    SpaceAgencyRepresentative user = (SpaceAgencyRepresentative) loggedInUser;
+                    user.setManager(metricsManager);
+                    user.setEntries(metricsManager.getRso_metrics());
+                    console.runSpaceAgencyRepConsole(user, scanner, metricsManager);
+                }
+                else{
+                    System.out.println("Error reaching console");
+                }
             }
         }
         scanner.close();

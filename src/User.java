@@ -77,6 +77,22 @@ public abstract class User {
     }
 
     /**
+     * Sets the users name
+     * @param name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Sets the users role
+     * @param role
+     */
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    /**
      * Displays the role associated with the user.
      * <p>
      * Each subclass must implement this method to define how the role is displayed.
@@ -84,8 +100,13 @@ public abstract class User {
      */
     public abstract void displayRole();
 
+    /**
+     * Propmts a newly created user to enter their password
+     * 
+     * @param scanner
+     */
     public void promptNewPassword(Scanner scanner){
-        System.out.println("Please enter new user's password:");
+        System.out.println("Please enter this user's password:");
         String password = scanner.nextLine();
         this.password = password;
     }
