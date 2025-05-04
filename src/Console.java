@@ -39,7 +39,7 @@ public class Console {
                 case 1:
                     manager.updateLog(admin.getName() + " began adding new users");
                     while (true) {
-                        System.out.print("Enter User Type [Scientist, Space Agency Representative, Policy Maker] or 'B' to go back: ");
+                        System.out.print("Enter User Type [Scientist, Space Agency Representative, Administrator] or 'B' to go back: ");
                         String typeIn = scanner.nextLine();
                         if (typeIn.equalsIgnoreCase("B")) {
                             manager.updateLog(admin.getName() + " ceased adding new users");
