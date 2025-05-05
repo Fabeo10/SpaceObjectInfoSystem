@@ -73,30 +73,42 @@ public class CSVParser {
                             geohash, daysOld, conjunctionCount);
     }
 
+    /**
+     * Retrieves the data from a column with name columneName from a list of fields
+     * 
+     * @param fields - A list of data arrayed in columns, mapped to their header name
+     * @param columnName - The header name that provides the key
+     * @return - The data at the index which matches that of the columnName in headers
+     */
     private static String getField(List<String> fields, String columnName) {
         Integer index = headers.get(columnName.toLowerCase());
         if (index == null || index >= fields.size()) {
-            return ""; // or throw an error, depending on how strict you want to be
+            return "";
         }
         return fields.get(index);
     }
 
     /**
      * Reads a CSV file line by line and creates a new object from each entry
+     * Trims the Byte Order Marker from the first line of the file if present
      * 
      * @param filename - The given file where the data is stored
      * @return A list of all the created objects
      */
-    public static List<SpaceObject> readCsvFile(String filename) {
+    public List<SpaceObject> readCsvFile(String filename) {
         List<SpaceObject> entries = new ArrayList<>();                                 //Fields are stored as a list of Strings
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {   
-            String headerLine = reader.readLine();                                     
+            String headerLine = reader.readLine();
             List<String> headerFields = parseLine(headerLine); 
 
             headers = new HashMap<>();                                                 
-            for (int i = 0; i < headerFields.size(); i++) {                            
-                headers.put(headerFields.get(i).toLowerCase(), i);                     //Parses the header line into a list of fields, mapped to integers
+            for (int i = 0; i < headerFields.size(); i++) {
+                String currHeader = headerFields.get(i);
+                if(currHeader.startsWith("ï»¿")){                               //Trim the BOM from the first header
+                    currHeader = currHeader.substring(3);
+                }                            
+                headers.put(currHeader.toLowerCase(), i);                              //Parses the header line into a list of fields, mapped to integers
             }
         
             String line;
@@ -117,7 +129,7 @@ public class CSVParser {
      * @param records - The formatted list of records to be written into the csv
      * @param filename - The name of the newly created CSV file
      */
-    public static void writeRecordsToCsv(List<SpaceObject> records, String filename){
+    public void writeRecordsToCsv(List<SpaceObject> records, String filename){
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
             // Write header
             writer.write("record_id,norad_cat_id,satellite_name,country,approximate_orbit_type,object_type,launch_year,launch_site,longitude,avg_longitude,geohash,HRR_Category,is_nominated,nominated_at,has_dossier,last_updated_at,justification,focused_analysis,days_old,conjunction_count,is_unk_object,all_maneuvers,days_since_ob,recent_maneuvers,deltaV_90day,has_sister_debris,still_in_orbit,risk_level");
@@ -125,9 +137,30 @@ public class CSVParser {
 
             // Write each record
             for (SpaceObject object : records) {
-                writer.write(object.toCsv());
+                writer.write(object.toCsvMetrics());
                 writer.newLine();
             }
+        }catch(IOException e){
+            System.out.println(e);
+        }
+    }
+
+    /**
+     * Writes a formatted header followed by a CSV formatted Density_Report with a unique identifier
+     * 
+     * @param filteredEntries - The list of objects to be included in the report
+     * @param indentifier - A user chosen addition to the report name for ease of location
+     */
+    public void writeReportsToCsv(List<SpaceObject> filteredEntries, String indentifier){
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Density_Report_" + indentifier + ".csv"))){
+            writer.write("RecordID,Satellite_Name,Country,Orbit_Type,Launch_Year,Object_Type");
+            writer.newLine();
+            for(SpaceObject object : filteredEntries){
+                writer.write(object.toCsvReports());
+                writer.newLine();
+            }
+            writer.write("Number of entries in range: " + filteredEntries.size());
+            writer.newLine();
         }catch(IOException e){
             System.out.println(e);
         }

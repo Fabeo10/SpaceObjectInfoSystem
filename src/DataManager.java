@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DataManager {
+    private CSVParser parser = new CSVParser();
     private List<SpaceObject> rso_metrics;
     private Map<String, User> users;
 
@@ -40,10 +41,6 @@ public class DataManager {
             case "space agency representative":
             case "spaceagencyrepresentative":
                 return new SpaceAgencyRepresentative(userName);
-
-            case "policy maker":
-            case "policymaker":
-                return new PolicyMaker(userName);
 
             case "administrator":
                 return new Administrator(userName);
@@ -104,7 +101,7 @@ public class DataManager {
      * Loads the space object data from a CSV file into the entries list.
      */
     public void loadMetricData(){
-        this.rso_metrics = CSVParser.readCsvFile("rso_metrics.csv");
+        this.rso_metrics = parser.readCsvFile("rso_metrics_columns_jumbled.csv");
     }
 
     /**
@@ -115,7 +112,7 @@ public class DataManager {
      */
     public void updateMetricData(String filename){
         long startTime = System.nanoTime();
-        CSVParser.writeRecordsToCsv(rso_metrics, filename);
+        parser.writeRecordsToCsv(rso_metrics, filename);
         long endTime = System.nanoTime();
         long updateTime = (endTime - startTime) / 1000000;
         System.out.println("Time to load " + rso_metrics.size() + " entries: " + updateTime + "ms");
@@ -126,7 +123,7 @@ public class DataManager {
      * 
      * @param description - A brief description of the users action
      */
-    public static void updateLog(String description) {
+    public void updateLog(String description) {
         DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String timestamp = LocalDateTime.now().format(FORMATTER);
         String entry = "[" + timestamp + "] " + description;
@@ -139,22 +136,52 @@ public class DataManager {
         }
     }
 
+    /**
+     * Generates a CSV formatted Density Report of filtered Space Objects
+     * 
+     * @param filteredList - The list of space Objects to be included in the report
+     * @param identifier - A user chosen addition to the report name for ease of location
+     */
+    public void generateDensityReport(List<SpaceObject> filteredList, String identifier){
+        parser.writeReportsToCsv(filteredList, identifier);
+    }
+
+    /**
+     * Used to retrieve the current unfiltered list of space objects
+     */
     public List<SpaceObject> getRso_metrics() {
         return rso_metrics;
     }
 
+    /**
+     * User to retrieve the list of authorized users
+     */
     public Map<String, User> getUsers() {
         return users;
     }
 
+    /**
+     * Used to alter the current list of unfiltered list of space objects
+     */
     public void setRso_metrics(List<SpaceObject> rso_metrics) {
         this.rso_metrics = rso_metrics;
     }
 
+    /**
+     * User to alter the lsit of authorized users
+     */
     public void setUsers(Map<String, User> users) {
         this.users = users;
     }
 
+    /**
+     * Checks that a users name is on the list and that their password matches
+     * as shown on the authorized users list
+     * 
+     * @param name - The name of the user attempting to login
+     * @param password - The entered password of the user attempting to log in
+     * @return - True if the password matches the user entry, False otherwise
+     */
     public boolean validateLogin(String name, String password){
         User loginAttempt = users.get(name);
         if(loginAttempt != null){

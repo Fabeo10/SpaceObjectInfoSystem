@@ -17,7 +17,7 @@ import java.util.List;
  * @author David Jones
  * @version 1.0
  */
-public class Scientist extends User{
+public class Scientist extends User implements FilterInterface{
     private DataManager manager;
     private List<SpaceObject> entries;
     /**
@@ -29,10 +29,16 @@ public class Scientist extends User{
         super(name, "Scientist");
     }
 
+    /**
+     * Used to assign the scientist user with a RSO_Metrics DataManager
+     */
     public void setManager(DataManager manager) {
         this.manager = manager;
     }
     
+    /**
+     * Used to assign the scientist user with a list of space objects
+     */
     public void setEntries(List<SpaceObject> entries) {
         this.entries = entries;
     }
@@ -46,25 +52,38 @@ public class Scientist extends User{
     }
 
     /**
+     * Allows the scientist user to filter the list of space objects by either
+     * those in Low Earth Orbit, or those of a certain Object_type
+     * 
+     * @param filteredEntries - The empty list of space objects to be filled
+     * @param criteria - The field that the scientist would like to filter by, eith LEO or Object_type
+     */
+    @Override
+    public void filterByField(List<SpaceObject> filteredEntries, String criteria){
+        for(SpaceObject object : entries){
+            if(criteria.equalsIgnoreCase("leo")){
+                if(object.getOrbitType().toLowerCase().contains("leo")){
+                    filteredEntries.add(object);
+                }
+            }
+            if(object.getObject_type().toLowerCase().contains(criteria.toLowerCase())){
+                filteredEntries.add(object);
+            }
+        }
+    }
+
+    /**
      * Filters and displays all space objects that match a specified object type.
      * Also prints the time taken to complete the filtering and display.
      *
      * @param object_type the type of object to track (e.g., "debris", "satellite")
      */
     public void trackObjectsInSpace(String object_type){
-        long startTime = System.nanoTime();
         List<SpaceObject> filteredEntries = new ArrayList<>();
-        for(SpaceObject object : entries){
-            if(object.getObject_type().toLowerCase().contains(object_type.toLowerCase())){
-                filteredEntries.add(object);
-            }
-        }
+        filterByField(filteredEntries, object_type);
         for(SpaceObject object : filteredEntries){
             System.out.println(object);
         }
-        long endTime = System.nanoTime();
-        long trackingTime = (endTime - startTime) / 1000000;
-        System.out.println("Time to track " + filteredEntries.size() + " objects of this type in space: " + trackingTime + "ms");
     }
 
     /**
@@ -72,19 +91,11 @@ public class Scientist extends User{
      * Also prints the time taken to complete the filtering and display.
      */
     public void trackObjectsInLEO(){
-        long startTime = System.nanoTime();
         List<SpaceObject> filteredEntries = new ArrayList<>();
-        for(SpaceObject object : entries){
-            if(object.getOrbitType().toLowerCase().contains("leo")){
-                filteredEntries.add(object);
-            }
-        }
+        filterByField(filteredEntries, "leo");
         for(SpaceObject object : filteredEntries){
             System.out.println(object);
         }
-        long endTime = System.nanoTime();
-        long trackLEOtime = (endTime - startTime) /1000000;
-        System.out.println("Time to track " + filteredEntries.size() + " in LEO: " + trackLEOtime + "ms");
     }
 
     /**
@@ -93,7 +104,6 @@ public class Scientist extends User{
      * Also prints the time taken to complete the assessment.
      */
     public void assessRiskLevel(){
-        long startTime = System.nanoTime();
         for(SpaceObject object : entries){
             double orbitalDrift = Math.abs((object.getLongitude() - object.getAverageLongitude()));
             if(orbitalDrift >= 50){
@@ -107,9 +117,6 @@ public class Scientist extends User{
             }
         }
         manager.setRso_metrics(entries);
-        long endTime = System.nanoTime();
-        long assesssRiskTime = (endTime - startTime) / 1000000;
-        System.out.println("Time to assess the risk level of " + entries.size() + " entries: " + assesssRiskTime + "ms");
     }
 
     /**
@@ -118,7 +125,6 @@ public class Scientist extends User{
      * Also prints the time taken to complete the evaluation.
      */
     public void assessStillInOrbit(){
-        long startTime = System.nanoTime();
         for(SpaceObject object : entries){
             if(((object.getOrbitType() == null) || ((object.getLongitude() > 180) ||
                 (object.getLongitude() < -180)) || (object.getDaysOld() >= 15000)) &&
@@ -129,8 +135,5 @@ public class Scientist extends User{
             }
         }
         manager.setRso_metrics(entries);
-        long endTime = System.nanoTime();
-        long assessOrbitalStatusTime = (endTime - startTime) / 1000000;
-        System.out.println("Time to assess the orbital status of " + entries.size() + " entries:" + assessOrbitalStatusTime + "ms");
     }
 }

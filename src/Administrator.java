@@ -63,9 +63,8 @@ public class Administrator extends User{
                 users.put(u.getName(), u);
                 break;
 
-            case "policy maker":
-            case "policymaker":
-                u = new PolicyMaker(userName);
+            case "administrator":
+                u = new Administrator(userName);
                 u.promptNewPassword(scanner);
                 users.put(u.getName(), u);
                 break;
@@ -81,14 +80,48 @@ public class Administrator extends User{
      *
      * @param userName the unique Name of the user to manage
      */
-    public void manageUser(String userName) {
+    public void manageUser(String userName, Scanner scanner) {
         User u = users.get(userName);
         if (u != null) {
-            System.out.print("Managing user: ");
-            u.displayRole();
-            // (additional management logic could go here)
+            boolean exit = false;
+            while(!exit){
+                System.out.print("Managing user: ");
+                u.displayRole();
+                System.out.println("\n===Update User Info===" +
+                                    "\n1. Change User Name" +
+                                    "\n2. Change User Role" +
+                                    "\n3. Change User Password" +
+                                    "\n4. Go Back");
+                int manageUserChoice;
+                try{
+                    manageUserChoice = Integer.parseInt(scanner.nextLine());
+                }catch(NumberFormatException e){
+                    System.out.println("Invalid input. Please enter a number 1-4");
+                    continue;
+                }
+                switch(manageUserChoice){
+                    case 1:
+                        System.out.println("Please enter new Name:");
+                        String newName = scanner.nextLine();
+                        u.setName(newName);
+                        break;
+                    case 2:
+                        System.out.println("Please enter new Role:");
+                        String newRole = scanner.nextLine();
+                        u.setRole(newRole);
+                        break;
+                    case 3:
+                        System.out.println("Please enter new Password:");
+                        String newPassword = scanner.nextLine();
+                        u.setPassword(newPassword);
+                        break;
+                    case 4:
+                        exit = true;
+                        break;
+                }
+            }
         } else {
-            System.out.println("No user found with ID: " + userName);
+            System.out.println("No user found with Name: " + userName);
         }
     }
 
@@ -99,20 +132,11 @@ public class Administrator extends User{
      */
     public void deleteUser(String userName) {
         if (users.remove(userName) != null) {
-            System.out.println("Deleted user with ID: " + userName);
+            System.out.println("Deleted user with Name: " + userName);
             manager.setUsers(users);
         } else {
-            System.out.println("No user found with ID: " + userName);
+            System.out.println("No user found with Name: " + userName);
         }
-    }
-
-    /**
-     * Prints a summary of all users currently registered.
-     */
-    public void displayAllUsers() {
-        System.out.println("=== Registered Users ===");
-        users.values()
-             .forEach(u -> System.out.println("- " + u.getName() + " (" + u.getRole() + ") Password: " + u.getPassword()));
     }
 
     /**
@@ -121,7 +145,6 @@ public class Administrator extends User{
     @Override
     public void displayRole() {
         System.out.println("Administrator: " + name);
-
     }
 
     /**
@@ -134,10 +157,20 @@ public class Administrator extends User{
         return users.get(name);
     }
 
+    /**
+     * Used to assign a DataManager to an Administrator
+     * 
+     * @param manager - The assigned User DataManager
+     */
     public void setManager(DataManager manager) {
         this.manager = manager;
     }
 
+    /**
+     * Used to provide an administrator with a list of authorized users
+     * 
+     * @param users - The list of authorized users
+     */
     public void setUsers(Map<String, User> users) {
         this.users = users;
     }

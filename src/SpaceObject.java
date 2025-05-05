@@ -165,34 +165,47 @@ public class SpaceObject {
 
     /**
      * Returns a detailed string representation of the space object,
-     * including all fields.
+     * including vital fields.
      *
-     * @return a formatted string of all object data
+     * @return a formatted string of vital object data
      */
     @Override
     public String toString() {
-        return " " + recordID + " " + norad_cat_id +  " " + sattelliteName + " " +
-                country + " " + orbitType + " " + object_type + " " + launchYear + " " + 
-                launchSite + " " + longitude + " " + averageLongitude + " " +
-                geohash + " " + hrr_category + " " + is_nominated + " " + nominated_at + " " +
-                has_dossier + " " + last_updated + " " + justification + " " + focusedAnalysis + " " +
-                daysOld + " " + conjunctionCount + " " + is_unk_obj + " " + allManeuvers + " " +
-                days_since_ob + " " + recentManeuvers + " " + deltaV90day + " " + has_sister_debris + " " +
-                stillInOrbit + " " + riskLevel;
+        return String.format("%s, %s, %s, %s, %d, %s, %.8f, %.8f, %s, %d",
+                             recordID,sattelliteName,country,orbitType,launchYear,
+                             launchSite,longitude,averageLongitude,geohash,daysOld);
     }
 
     /**
-     * Formats this space object as a CSV row.
+     * Formats this space object as a CSV row in Updated_RSO_Metrics
      * 
      * @return a comma-separated string of values
      */
-    public String toCsv() {
+    public String toCsvMetrics() {
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%.8f,%.8f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
                             recordID, norad_cat_id, sattelliteName, country, orbitType, object_type,
                             launchYear, launchSite, longitude, averageLongitude, escaped(geohash), hrr_category,
                             is_nominated, nominated_at, has_dossier, last_updated, justification,
                             focusedAnalysis, daysOld, conjunctionCount, is_unk_obj, allManeuvers, days_since_ob,
                             recentManeuvers, deltaV90day, has_sister_debris, stillInOrbit, riskLevel);
+    }
+
+    /**
+     * Formats this space objects as a row in a Density_Report
+     */
+    public String toCsvReports(){
+        return String.format("%s, %s, %s, %s, %d, %s",
+                            recordID,sattelliteName,country,orbitType,
+                            launchYear,object_type);
+    }
+
+    /**
+     * Formats this space object for display in the terminal
+     */
+    public String toImpactDisplay(){
+        return String.format("%s, %s, %s, %s, %s, %d, %d",
+                            recordID,sattelliteName,country,orbitType,
+                            object_type,daysOld,conjunctionCount);
     }
 
     /**
