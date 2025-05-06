@@ -3,8 +3,6 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,7 +99,7 @@ public class DataManager {
      * Loads the space object data from a CSV file into the entries list.
      */
     public void loadMetricData(){
-        this.rso_metrics = parser.readCsvFile("rso_metrics_columns_jumbled.csv");
+        this.rso_metrics = parser.readCsvFile("rso_metrics.csv");
     }
 
     /**
@@ -116,24 +114,6 @@ public class DataManager {
         long endTime = System.nanoTime();
         long updateTime = (endTime - startTime) / 1000000;
         System.out.println("Time to load " + rso_metrics.size() + " entries: " + updateTime + "ms");
-    }
-
-    /**
-     * Creates a timestamped log of user activities
-     * 
-     * @param description - A brief description of the users action
-     */
-    public void updateLog(String description) {
-        DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String timestamp = LocalDateTime.now().format(FORMATTER);
-        String entry = "[" + timestamp + "] " + description;
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("LOGS.txt", true))) {
-            writer.write(entry);
-            writer.newLine();
-        } catch (IOException e) {
-            System.err.println("Error writing to log file: " + e.getMessage());
-        }
     }
 
     /**

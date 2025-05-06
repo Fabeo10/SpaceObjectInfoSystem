@@ -34,7 +34,7 @@ public class SpaceObject {
     private String geohash;
 
     // Advanced/optional metadata
-    private String hrr_category = "";
+    private String hrr_category;
     private boolean is_nominated = false;
     private Timestamp nominated_at = null;
     private boolean has_dossier = false;
@@ -74,7 +74,7 @@ public class SpaceObject {
      */
     SpaceObject(String recordID, String satelliteName, String country, String orbitType, String object_type,
                 int launchYear, String launchSite, double longitude, double averageLongitude,
-                String geohash, int daysOld, long conjunctionCount) 
+                String geohash, int daysOld, long conjunctionCount, String hrr_category) 
     {
         this.recordID = recordID;
         this.norad_cat_id = recordID;
@@ -89,6 +89,7 @@ public class SpaceObject {
         this.geohash = geohash;
         this.daysOld = daysOld;
         this.conjunctionCount = conjunctionCount;
+        this.hrr_category = hrr_category;
     }
 
     /**

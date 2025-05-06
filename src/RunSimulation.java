@@ -13,7 +13,8 @@ public class RunSimulation {
     public static void main(String[] args) {
         DataManager userManager = new DataManager("users");
         DataManager metricsManager = new DataManager("metrics");
-        userManager.updateLog("Sytem initialized");
+        Log logger = new Log();
+        logger.updateLog("Sytem initialized");
 
         Scanner scanner = new Scanner(System.in);
         Administrator loginAdmin = new Administrator("loginAdmin");
@@ -21,6 +22,7 @@ public class RunSimulation {
         boolean exit = false;
         while(!exit){
             loginAdmin.setUsers(userManager.getUsers());
+            System.out.println("Welcome to the Space Object Info System! Please login: ");
             System.out.println("Please enter your Name (or exit): ");
             String loginAttemptName = scanner.nextLine();
             if(loginAttemptName.equalsIgnoreCase("exit")){
@@ -38,19 +40,19 @@ public class RunSimulation {
                     Scientist user = (Scientist) loggedInUser;
                     user.setManager(metricsManager);
                     user.setEntries(metricsManager.getRso_metrics());
-                    console.runScientistConsole(user, scanner, metricsManager);
+                    console.runScientistConsole(user, scanner, metricsManager, logger);
                 }
                 else if(loggedInUser.getRole().equalsIgnoreCase("administrator")){
                     Administrator user = (Administrator) loggedInUser;
                     user.setManager(userManager);
                     user.setUsers(userManager.getUsers());
-                    console.runAdminConsole(user, scanner, userManager);
+                    console.runAdminConsole(user, scanner, userManager, logger);
                 }
                 else if(loggedInUser.getRole().equalsIgnoreCase("Space Agency Representative")){
                     SpaceAgencyRepresentative user = (SpaceAgencyRepresentative) loggedInUser;
                     user.setManager(metricsManager);
                     user.setEntries(metricsManager.getRso_metrics());
-                    console.runSpaceAgencyRepConsole(user, scanner, metricsManager);
+                    console.runSpaceAgencyRepConsole(user, scanner, metricsManager, logger);
                 }
                 else{
                     System.out.println("Error reaching console");
