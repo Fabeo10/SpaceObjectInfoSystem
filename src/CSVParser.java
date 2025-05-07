@@ -63,6 +63,7 @@ public class CSVParser {
         double longitude = Double.parseDouble(getField(fields, "longitude"));
         double averageLongitude = Double.parseDouble(getField(fields, "avg_longitude"));
         String geohash = getField(fields, "geohash");
+        String hrr_category = getField(fields, "HRR_Category");
 
         // Analytical metrics
         int daysOld = Integer.parseInt(getField(fields, "days_old"));
@@ -70,7 +71,7 @@ public class CSVParser {
 
         return new SpaceObject(recordID, sattelliteName, country, orbitType, object_type,
                             launchYear, launchSite, longitude, averageLongitude,
-                            geohash, daysOld, conjunctionCount);
+                            geohash, daysOld, conjunctionCount,hrr_category);
     }
 
     /**
@@ -104,10 +105,7 @@ public class CSVParser {
 
             headers = new HashMap<>();                                                 
             for (int i = 0; i < headerFields.size(); i++) {
-                String currHeader = headerFields.get(i);
-                if(currHeader.startsWith("ï»¿")){                               //Trim the BOM from the first header
-                    currHeader = currHeader.substring(3);
-                }                            
+                String currHeader = headerFields.get(i);                          
                 headers.put(currHeader.toLowerCase(), i);                              //Parses the header line into a list of fields, mapped to integers
             }
         

@@ -16,8 +16,8 @@ public class Console {
      * @param scanner - A scanner for prompting user input
      * @param manager - The administrator user's assigned DataManager
      */
-    public void runAdminConsole(Administrator admin, Scanner scanner, DataManager manager) {
-        manager.updateLog("Administrator " + admin.getName() + " logged in");
+    public void runAdminConsole(Administrator admin, Scanner scanner, DataManager manager, Log logger) {
+        logger.updateLog("Administrator " + admin.getName() + " logged in");
         boolean exit = false;
         while (!exit) {
             System.out.println("\n===== Administrator Console ====="
@@ -37,19 +37,19 @@ public class Console {
 
             switch (adminChoice) {
                 case 1:
-                    manager.updateLog(admin.getName() + " began adding new users");
+                    logger.updateLog(admin.getName() + " began adding new users");
                     while (true) {
                         System.out.print("Enter User Type [Scientist, Space Agency Representative, Administrator] or 'B' to go back: ");
                         String typeIn = scanner.nextLine();
                         if (typeIn.equalsIgnoreCase("B")) {
-                            manager.updateLog(admin.getName() + " ceased adding new users");
+                            logger.updateLog(admin.getName() + " ceased adding new users");
                             break;
                         }
                         System.out.print("Enter User Name: ");
                         String nameIn = scanner.nextLine();
                         try {
                             admin.createUser(typeIn, nameIn, scanner);
-                            manager.updateLog(admin.getName() + " added " + typeIn + " " + nameIn + " to the USERS list");
+                            logger.updateLog(admin.getName() + " added " + typeIn + " " + nameIn + " to the USERS list");
                         } catch (IllegalArgumentException e) {
                             System.out.println(e.getMessage());
                             System.out.println("Please try again or enter 'B' to discard operation and return to admin console.");
@@ -58,17 +58,17 @@ public class Console {
                     break;
 
                 case 2:
-                    manager.updateLog(admin.getName() + " began updating user info");
+                    logger.updateLog(admin.getName() + " began updating user info");
                     while (true) {
                         System.out.print("Enter the User Name to manage or 'B' to go back: ");
                         String name = scanner.nextLine();
                         if (name.equalsIgnoreCase("B")) {
-                            manager.updateLog(admin.getName() + " ceased updating user info");
+                            logger.updateLog(admin.getName() + " ceased updating user info");
                             break;
                         }
                         if (admin.getUserByName(name) != null) {
                             admin.manageUser(name, scanner);
-                            manager.updateLog(admin.getName() + " updated user " + name + "'s info");
+                            logger.updateLog(admin.getName() + " updated user " + name + "'s info");
                         } else {
                             System.out.println("No user found with Name: " + name + ". Try again or 'B' to discard operation and return to admin console.");
                         }
@@ -76,17 +76,17 @@ public class Console {
                     break;
 
                 case 3:
-                    manager.updateLog(admin.getName() + " began deleting users");
+                    logger.updateLog(admin.getName() + " began deleting users");
                     while (true) {
                         System.out.print("Enter the User Name to delete or 'B' to go back: ");
                         String name = scanner.nextLine();
                         if (name.equalsIgnoreCase("B")) {
-                            manager.updateLog(admin.getName() + " ceased deleting users");
+                            logger.updateLog(admin.getName() + " ceased deleting users");
                             break;
                         }
                         if (admin.getUserByName(name) != null) {
                             admin.deleteUser(name);
-                            manager.updateLog(admin.getName() + " deleted user " + name);
+                            logger.updateLog(admin.getName() + " deleted user " + name);
                         } else {
                             System.out.println("No user found with Name: " + name + ". Try again or 'B' to discard operation and return to admin console.");
                         }
@@ -96,7 +96,7 @@ public class Console {
                 case 4:
                     exit = true;
                     manager.updateUserData("USERS.csv");
-                    manager.updateLog(admin.getName() + " logged out");
+                    logger.updateLog(admin.getName() + " logged out");
                     System.out.println("\n***Exited Administrative Console Gracefully.***");
                     break;
 
@@ -114,8 +114,8 @@ public class Console {
      * @param scanner - A scanner for prompting user input
      * @param manager - The scientist user's assigned DataManager
      */
-    public void runScientistConsole(Scientist s, Scanner scanner, DataManager manager) {
-        manager.updateLog("Scientist " + s.getName() + " logged in");
+    public void runScientistConsole(Scientist s, Scanner scanner, DataManager manager, Log logger) {
+        logger.updateLog("Scientist " + s.getName() + " logged in");
         boolean exit = false;
         while (!exit) {
             System.out.println("\n===== Scientist Console ====="
@@ -134,17 +134,17 @@ public class Console {
 
             switch (scientistChoice) {
                 case 1:
-                    manager.updateLog(s.getName() + " began tracking objects in space");
+                    logger.updateLog(s.getName() + " began tracking objects in space");
                     System.out.println("Select the type of object to track:");
                     System.out.println("ROCKET BODY | PAYLOAD | DEBRIS | UNKNOWN");
                     String objectType = scanner.nextLine();
                     s.trackObjectsInSpace(objectType);
-                    manager.updateLog(s.getName() + " requested a " + objectType + " list");
+                    logger.updateLog(s.getName() + " requested a " + objectType + " list");
                     break;
 
                 case 2:
                     boolean subExit = false;
-                    manager.updateLog(s.getName() + " began updating orbital metrics");
+                    logger.updateLog(s.getName() + " began updating orbital metrics");
                     while (!subExit) {
                         System.out.println("\nWould you like to:"
                                 + "\n1. Track Objects In Low Earth Orbit"
@@ -162,37 +162,35 @@ public class Console {
 
                         switch (subChoice) {
                             case 1:
-                                manager.updateLog(s.getName() + " requested a list of objects in LEO");
+                                logger.updateLog(s.getName() + " requested a list of objects in LEO");
                                 s.trackObjectsInLEO();
                                 break;
                             case 2:
                                 System.out.println("Assessing objects still in orbit...");
                                 s.assessStillInOrbit();
                                 System.out.println("Records updated");
-                                manager.updateLog(s.getName() + " added still_in_orbit column to Updated_RSO_Metrics.csv");
-                                manager.updateLog(s.getName() + " added results to still_in_orbit column");
+                                logger.updateLog(s.getName() + " added results to still_in_orbit column");
                                 break;
                             case 3:
                                 System.out.println("Assessing risk level of objects...");
                                 s.assessRiskLevel();
                                 System.out.println("Records updated");
-                                manager.updateLog(s.getName() + " added risk_level column to Updated_RSO_Metrics.csv");
-                                manager.updateLog(s.getName() + " added results to risk_level column");
+                                logger.updateLog(s.getName() + " added results to risk_level column");
                                 break;
                             case 4:
                                 subExit = true;
-                                manager.updateLog(s.getName() + " ceased adding to Updated_RSO_Metrics.csv");
+                                logger.updateLog(s.getName() + " ceased adding to Updated_RSO_Metrics.csv");
                                 break;
                             default:
                                 System.out.println("Invalid option. Please try again.");
                         }
                     }
-                    manager.updateLog(s.getName() + " ceased updating orbital metrics");
+                    logger.updateLog(s.getName() + " ceased updating orbital metrics");
                     break;
 
                 case 3:
                     exit = true;
-                    manager.updateLog(s.getName() + " logged out");
+                    logger.updateLog(s.getName() + " logged out");
                     break;
 
                 default:
@@ -201,9 +199,9 @@ public class Console {
         }
 
         System.out.println("Generating Updated Metrics...");
-        manager.updateLog("Writing Updated_RSO_Metrics.csv...");
+        logger.updateLog("Writing Updated_RSO_Metrics.csv...");
         manager.updateMetricData("Updated_RSO_Metrics_test.csv");
-        manager.updateLog("Update complete");
+        logger.updateLog("Update complete");
     }
 
     /**
@@ -214,8 +212,8 @@ public class Console {
      * @param scanner - A scanner for prompting users
      * @param manager - The users assigned DataManager
      */
-    public void runSpaceAgencyRepConsole(SpaceAgencyRepresentative s, Scanner scanner, DataManager manager){
-        manager.updateLog("Space Agency Representative " + s.getName() + " logged in");
+    public void runSpaceAgencyRepConsole(SpaceAgencyRepresentative s, Scanner scanner, DataManager manager, Log logger){
+        logger.updateLog("Space Agency Representative " + s.getName() + " logged in");
         boolean exit = false;
         while(!exit){
             System.out.println("\n====Space Agency Rep Console===="+
@@ -233,18 +231,18 @@ public class Console {
 
             switch(spAgRepChoice){
                 case 1:
-                    manager.updateLog(s.getName() + " began analyzing long term impacts");
+                    logger.updateLog(s.getName() + " began analyzing long term impacts");
                     s.analyzeLongTermImpact();
                     break;
 
                 case 2:
-                    manager.updateLog(s.getName() + " began generating a density report");
+                    logger.updateLog(s.getName() + " began generating a density report");
                     s.generateDensityReport(scanner);
                     break;
 
                 case 3:
                     exit = true;
-                    manager.updateLog(s.getName() + " logged out");
+                    logger.updateLog(s.getName() + " logged out");
                     break;
             }
         }

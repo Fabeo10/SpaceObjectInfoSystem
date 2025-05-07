@@ -21,7 +21,7 @@ public class Log {
     private static final String LOG_FILE = "LOGS.txt";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public static void updateLog(String description) {
+    public void updateLog(String description) {
         String timestamp = LocalDateTime.now().format(FORMATTER);
         String entry = "[" + timestamp + "] " + description;
 
